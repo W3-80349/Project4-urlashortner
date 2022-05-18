@@ -3,19 +3,19 @@ const mongoose = require('mongoose')
 
 const urlSchema = new mongoose.Schema({
 
-    urlCode: {
+    URLCode: {
         type: String,
         required: true,
-        unique: true,
+
         lowercase: true,
         trim: true
     },
-    longUrl: {
+    longURL: {
         type: String,
         required: true,
         trim: true
     },
-    shortUrl: {
+    shortURL: {
         type: String,
         unique: true,
         required: true
