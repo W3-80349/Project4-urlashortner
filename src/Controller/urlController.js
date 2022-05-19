@@ -86,16 +86,16 @@ const getUrl = async (req, res) => {
     const { urlCode } = req.params
 
     if (Object.keys(req.params).length === 0) {
-        return res.status(400).send({ status: false.valueOf, message: "Error: no prams given" })
+        return res.status(400).send({ status: false, message: "Error: no prams given" })
     }
     if (!req.params.urlCode) {
         return res.status(400).send({ status: false, message: "InValid Request" })
     }
 
-    const response = await GET_ASYNC(`${urlCode}`)
-    if (response) {
+    const urlCache = await GET_ASYNC(`${urlCode}`)
+    if (urlCache) {
         console.log("redis worked");
-        return res.status(301).redirect(response)
+        return res.status(301).redirect(urlCache)
     }
     else {
         const urlDoc = await urlModel.findOne({ URLCode: req.params.urlCode })

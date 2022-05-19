@@ -6,7 +6,6 @@ const urlSchema = new mongoose.Schema({
     URLCode: {
         type: String,
         required: true,
-
         lowercase: true,
         trim: true
     },
@@ -18,7 +17,8 @@ const urlSchema = new mongoose.Schema({
     shortURL: {
         type: String,
         unique: true,
-        required: true
+        required: true,
+        trimt: true
 
     }
 
