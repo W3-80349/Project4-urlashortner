@@ -35,6 +35,60 @@ const SET_ASYNC = promisify(redisClient.SET).bind(redisClient);
 const GET_ASYNC = promisify(redisClient.GET).bind(redisClient);
 
 
+// const urlShortener = async (req, res) => {
+//     try {
+//         const { longURL } = req.body
+//         const baseURL = "http://localhost:3000"
+
+//         if (!validator.isValid(longURL)) {
+//             return res.status(400).send({ status: false, message: "should not be empty" })
+//         }
+//         if (!validator.isRequestBodyValid(req.body)) {
+//             return res.status(400).send({ status: false, message: "req body should not be empty" })
+//         }
+//         if (!validator.isValidUrl(longURL)) {
+//             return res.status(400).send({ status: false, message: "Not a valid url" })
+//         }
+//         // const alreadyShortned = await validator.isAlreadyShortned(longURL)
+//         // console.log(alreadyShortned);
+//         // if (alreadyShortned) {
+//         //     return res.status(201).send({ status: true, message: "Already Shortned!", data: alreadyShortned })
+//         // }
+
+        
+    
+//         let existUrl = await GET_ASYNC(`${req.longURL}`)
+        
+//         if (existUrl) {
+//             await SET_ASYNC(`${req.longURL}`, JSON.stringify(existUrl))
+            
+//             return res.status(200).send({ status: true, data: data(existUrl) });
+//         }
+//         const urlCode = shortid.generate().toLowerCase()
+//         console.log(urlCode);
+//         const shortURL = baseURL + "/" + urlCode
+//         const resultObj = {
+//             longURL: longURL,
+//             shortURL: shortURL,
+//             URLCode: urlCode
+//         }
+
+//         const newUrlDoc = await urlModel.create(resultObj)
+
+//         if (!newUrlDoc) {
+//             return res.status(400).send({ status: false, message: "No url doc is created in DB" })
+//         }
+
+//         await SET_ASYNC(`${longURL}`, JSON.stringify(newUrlDoc));
+
+//         return res.status(201).send({ status: true, data: newUrlDoc })
+
+
+//     } catch (error) {
+//         res.status(500).send({ error: error.message })
+//     }
+// }
+
 const urlShortener = async (req, res) => {
     try {
         const { longURL } = req.body
@@ -49,24 +103,16 @@ const urlShortener = async (req, res) => {
         if (!validator.isValidUrl(longURL)) {
             return res.status(400).send({ status: false, message: "Not a valid url" })
         }
-        // const alreadyShortned = await validator.isAlreadyShortned(longURL)
-        // console.log(alreadyShortned);
-        // if (alreadyShortned) {
-        //     return res.status(201).send({ status: true, message: "Already Shortned!", data: alreadyShortned })
-        // }
-
-        
-    
-        let existUrl = await GET_ASYNC(`${req.longURL}`)
-        
-        if (existUrl) {
-            await SET_ASYNC(`${req.longURL}`, JSON.stringify(existUrl))
-            
-            return res.status(200).send({ status: true, data: data(existUrl) });
+        const alreadyShortned = await validator.isAlreadyShortned(longURL)
+        console.log(alreadyShortned);
+        if (alreadyShortned) {
+            return res.status(201).send({ status: true, message: "Already Shortned!", data: alreadyShortned })
         }
+
         const urlCode = shortid.generate().toLowerCase()
         console.log(urlCode);
         const shortURL = baseURL + "/" + urlCode
+
         const resultObj = {
             longURL: longURL,
             shortURL: shortURL,
@@ -79,8 +125,6 @@ const urlShortener = async (req, res) => {
             return res.status(400).send({ status: false, message: "No url doc is created in DB" })
         }
 
-        await SET_ASYNC(`${longURL}`, JSON.stringify(newUrlDoc));
-
         return res.status(201).send({ status: true, data: newUrlDoc })
 
 
@@ -88,7 +132,6 @@ const urlShortener = async (req, res) => {
         res.status(500).send({ error: error.message })
     }
 }
-
 
 
 const getUrl = async (req, res) => {
