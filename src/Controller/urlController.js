@@ -55,21 +55,30 @@ const urlShortener = async (req, res) => {
             return res.status(201).send({ status: true, message: "Already Shortned!", data: alreadyShortned })
         }
 
-        const urlCode = shortid.generate().toLowerCase()
-        console.log(urlCode);
-        const shortURL = baseURL + "/" + urlCode
-
+        
         const resultObj = {
             longURL: longURL,
             shortURL: shortURL,
             URLCode: urlCode
         }
+        let existUrl = await GET_ASYNC(`${req.longURL}`)
+        
+        if (existUrl) {
+            await SET_ASYNC(`${req.longURL}`, JSON.stringify(existUrl))
+            
+            return res.status(200).send({ status: true, data: data(existUrl) });
+        }
+        const urlCode = shortid.generate().toLowerCase()
+        console.log(urlCode);
+        const shortURL = baseURL + "/" + urlCode
 
         const newUrlDoc = await urlModel.create(resultObj)
 
         if (!newUrlDoc) {
             return res.status(400).send({ status: false, message: "No url doc is created in DB" })
         }
+
+        await SET_ASYNC(`${longURL}`, JSON.stringify(newUrlDoc));
 
         return res.status(201).send({ status: true, data: newUrlDoc })
 
