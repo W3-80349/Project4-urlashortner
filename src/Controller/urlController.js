@@ -49,18 +49,14 @@ const urlShortener = async (req, res) => {
         if (!validator.isValidUrl(longURL)) {
             return res.status(400).send({ status: false, message: "Not a valid url" })
         }
-        const alreadyShortned = await validator.isAlreadyShortned(longURL)
-        console.log(alreadyShortned);
-        if (alreadyShortned) {
-            return res.status(201).send({ status: true, message: "Already Shortned!", data: alreadyShortned })
-        }
+        // const alreadyShortned = await validator.isAlreadyShortned(longURL)
+        // console.log(alreadyShortned);
+        // if (alreadyShortned) {
+        //     return res.status(201).send({ status: true, message: "Already Shortned!", data: alreadyShortned })
+        // }
 
         
-        const resultObj = {
-            longURL: longURL,
-            shortURL: shortURL,
-            URLCode: urlCode
-        }
+    
         let existUrl = await GET_ASYNC(`${req.longURL}`)
         
         if (existUrl) {
@@ -71,6 +67,11 @@ const urlShortener = async (req, res) => {
         const urlCode = shortid.generate().toLowerCase()
         console.log(urlCode);
         const shortURL = baseURL + "/" + urlCode
+        const resultObj = {
+            longURL: longURL,
+            shortURL: shortURL,
+            URLCode: urlCode
+        }
 
         const newUrlDoc = await urlModel.create(resultObj)
 
