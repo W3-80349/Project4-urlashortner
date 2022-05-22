@@ -1,7 +1,6 @@
 
 const shortid = require("shortid")
 const urlModel = require("../Model/urlModel")
-const validator = require("../Validator/Validator")
 const redis = require("redis");
 const { promisify } = require("util");
 const validUrl = require("valid-url");
@@ -44,8 +43,6 @@ const  urlShortener  = async function (req, res) {
         if (Object.keys(bodyData).length == 0)
             return res.status(400).send({ status: false, message: "Enter Data in Body" });
 
-       
-        if (!validator.isValid(bodyData.longUrl))
 
         if (!validUrl.isUri(bodyData.longUrl))
             return res.status(400).send({ status: false, message: "Enter valid url" });
@@ -108,6 +105,7 @@ const getUrl = async (req, res) => {
         if (!urlDoc.longUrl) {
             return res.status(404).send({ status: false, message: "Long-url is empty" })
         }
+        await SET_ASYNC(`${urlCode}`, JSON.stringify(urlDoc.longUrl));
         await SET_ASYNC(urlCode, urlDoc.longUrl);
         console.log("redies not woked");
 
@@ -117,3 +115,4 @@ const getUrl = async (req, res) => {
 }
 
 module.exports = { urlShortener, getUrl }
+

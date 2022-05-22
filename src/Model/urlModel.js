@@ -18,7 +18,7 @@ const urlSchema = new mongoose.Schema({
         type: String,
         unique: true,
         required: true,
-        trimt: true
+        trim: true
 
     }
 
